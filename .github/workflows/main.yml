@@ -3,7 +3,7 @@ name: Deploy para VM
 on:
   push:
     branches:
-      - main  # ou 'develop'
+      - main
 
 jobs:
   deploy:
@@ -14,12 +14,11 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Copiar arquivos para a VM via SCP
-      uses: appleboy/scp-action@v0.1.1
+      uses: appleboy/scp-action@v0.1.2
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
-        passphrase: ""
         source: "."
         target: "/var/www/meusite/app-teste-ci/"
 
@@ -29,7 +28,6 @@ jobs:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
-        passphrase: ""
         script: |
           cd /var/www/meusite/app-teste-ci
           composer install --no-dev
