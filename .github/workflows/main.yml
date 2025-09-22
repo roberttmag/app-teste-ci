@@ -16,18 +16,18 @@ jobs:
     - name: Copiar arquivos para a VM via SSH
       uses: appleboy/scp-action@v0.1.1
       with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_KEY }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
         source: "."
         target: "/var/www/meusite/app-teste-ci/"
 
     - name: Rodar comandos na VM
       uses: appleboy/ssh-action@v0.1.5
       with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_KEY }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
         script: |
           cd /var/www/meusite/app-teste-ci
           composer install --no-dev
