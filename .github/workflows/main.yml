@@ -21,7 +21,6 @@ jobs:
         key: ${{ secrets.VM_KEY }}
         source: "."
         target: "/var/www/meusite/app-teste-ci/"
-        strict: false
 
     - name: Rodar comandos na VM
       uses: appleboy/ssh-action@v0.1.5
@@ -29,7 +28,6 @@ jobs:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
-        strict: false
         script: |
           cd /var/www/meusite/app-teste-ci
           composer install --no-dev
