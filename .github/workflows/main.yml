@@ -3,36 +3,32 @@ name: Deploy para VM
 on:
   push:
     branches:
-      - main   # ou 'develop', se você usa develop
+      - main  # ou 'develop'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Clonar o repositório
-      - name: Checkout do repositório
-        uses: actions/checkout@v3
+    - name: Clonar o repositório
+      uses: actions/checkout@v3
 
-      # 2️⃣ Copiar arquivos para a VM via SCP
-      - name: Copiar arquivos para a VM
-        uses: appleboy/scp-action@v0.1.1
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_KEY }}
-          source: "."
-          target: "/var/www/meusite/app-teste-ci/"
-          strip_components: 1   # remove o nível raiz do repositório, se quiser
+    - name: Copiar arquivos para a VM via SCP
+      uses: appleboy/scp-action@v0.1.1
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_KEY }}
+        source: "."
+        target: "/var/www/meusite/app-teste-ci/"
 
-      # 3️⃣ Rodar comandos na VM via SSH
-      - name: Rodar comandos na VM
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_KEY }}
-          script: |
-            cd /var/www/meusite/app-teste-ci
-            composer install --no-dev
-            sudo systemctl reload nginx
+    - name: Rodar comandos na VM
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_KEY }}
+        script: |
+          cd /var/www/meusite/app-teste-ci
+          composer install --no-dev
+          sudo systemctl reload nginx
