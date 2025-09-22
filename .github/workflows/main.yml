@@ -19,6 +19,7 @@ jobs:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
+        passphrase: ""
         source: "."
         target: "/var/www/meusite/app-teste-ci/"
 
@@ -28,6 +29,7 @@ jobs:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
+        passphrase: ""
         script: |
           cd /var/www/meusite/app-teste-ci
           composer install --no-dev
