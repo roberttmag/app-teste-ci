@@ -3,32 +3,22 @@ name: Deploy para VM
 on:
   push:
     branches:
-      - main
+      - main  # dispara sempre que houver push na branch main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clonar o repositório
-      uses: actions/checkout@v3
-
-    - name: Copiar arquivos para a VM via SCP
-      uses: appleboy/scp-action@v0.1.2
-      with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_KEY }}
-        source: "."
-        target: "/var/www/meusite/app-teste-ci/"
-
-    - name: Rodar comandos na VM
+    - name: Deploy via SSH com git pull
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
         script: |
-          cd /var/www/meusite/app-teste-ci
+          cd /var/www/meusite/app-teste-ci || exit 1
+          git reset --hard
+          git pull origin main
           composer install --no-dev
           sudo systemctl reload nginx
