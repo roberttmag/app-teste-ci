@@ -1,22 +1,36 @@
-name: Teste SSH Actions
+name: Deploy para VM
 
 on:
   push:
     branches:
-      - main
+      - main  # ou 'develop'
 
 jobs:
-  ssh-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Testar conexão SSH
+    - name: Clonar o repositório
+      uses: actions/checkout@v3
+
+    - name: Copiar arquivos para a VM via SCP
+      uses: appleboy/scp-action@v0.1.1
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_KEY }}
+        passphrase: ""
+        source: "."
+        target: "/var/www/meusite/app-teste-ci/"
+
+    - name: Rodar comandos na VM
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_KEY }}
+        passphrase: ""
         script: |
-          echo "Conexão SSH estabelecida com sucesso!"
-          whoami
-          hostname
+          cd /var/www/meusite/app-teste-ci
+          composer install --no-dev
+          sudo systemctl reload nginx
